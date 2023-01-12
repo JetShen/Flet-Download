@@ -2,14 +2,7 @@ from pytube import YouTube
 import requests
 import flet as f
 
-class app():
-    def build(self):
-        #self.reset()
-        self.result = f.Text(value="0", color=f.colors.WHITE, size=20)
-
-
 def main(page: f.Page):
-
     def download_yt(e):
         if tex_input.value == "" or tex_input.value == "Enter the link":
             wating_text.value = "Please enter the link"
