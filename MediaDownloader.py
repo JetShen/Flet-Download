@@ -1,3 +1,4 @@
+import re
 from pytube import YouTube
 import requests
 import flet as f
@@ -8,23 +9,27 @@ def main(page: f.Page):
             wating_text.value = "Please enter the link"
             page.update()
         else:
-            wating_text.value = "Please wait..."
-            page.update()
-            try:
-                link = str(tex_input.value)
-                check = requests.get(link)
-                if check.status_code == 200:
-                    yt = YouTube(link)
-                    stream = yt.streams.get_highest_resolution()
-                    stream.download()
-                    wating_text.value = "Download completed!!"
-                    page.update()
-                else:
-                    wating_text.value = "Error in the link"
-                    page.update()
-            except:
-                wating_text.value = "Error try again"
+            if not re.match(r"https?:\/\/(www\.)?youtube\.com\/watch\?v=[A-Za-z0-9_-]+", str(tex_input.value)):
+                wating_text.value = "Error: link isn't from youtube"
                 page.update()
+            else:
+                wating_text.value = "Please wait..."
+                page.update()
+                try:
+                    link = str(tex_input.value)
+                    check = requests.get(link)
+                    if check.status_code == 200:
+                        yt = YouTube(link)
+                        stream = yt.streams.get_highest_resolution()
+                        stream.download()
+                        wating_text.value = "Download completed!!"
+                        page.update()
+                    else:
+                        wating_text.value = "Error in the link"
+                        page.update()
+                except Exception as e:
+                    wating_text.value = f"Error: {e}"
+                    page.update()
 
     page.title = "Youtube Downloader"
     page.window_height = 500
